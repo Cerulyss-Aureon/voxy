@@ -7,10 +7,10 @@ jobs:
 
     steps:
       - name: Checkout sources
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 25
@@ -22,11 +22,19 @@ jobs:
           cache-cleanup: always
 
       - name: Gradle build
-        run: ./gradlew build
+        run: ./gradlew buildAndCollect
+
+      - name: List produced jars
+        run: |
+          echo "--- root build/libs ---"
+          find build/libs -name '*.jar' -print 2>/dev/null || true
+          echo "--- per-version build/libs ---"
+          find versions -path '*/build/libs/*.jar' -print 2>/dev/null || true
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
           name: voxy-artifacts
-          path: build/libs/*.jar
+          path: build/libs/**/*.jar
+          if-no-files-found: error
           archive: false
