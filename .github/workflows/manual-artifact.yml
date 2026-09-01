@@ -37,4 +37,4 @@ jobs:
           name: voxy-artifacts
           path: build/libs/**/*.jar
           if-no-files-found: error
-          archive: false
+          archive: true
